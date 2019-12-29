@@ -11,7 +11,6 @@ Licensed under the Apache License, Version 2.0 (the "License");
         <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-auth.js"></script>
         <script src="https://cdn.firebase.com/libs/firebaseui/3.4.1/firebaseui.js"></script>
         <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.4.1/firebaseui.css">
-        <script src="/main.js"></script>
         <title>Firenotes</title>
     </head>
     <body>
@@ -19,6 +18,15 @@ Licensed under the Apache License, Version 2.0 (the "License");
             <h1>Firenotes</h1>
             <h3>Sign in to access your notebook</h3>
             <div id="firebaseui-auth-container"></div>
+        </div>
+
+        <div>
+            <h1>Phone verificastion using reCAPTCHA</h1>
+            <div id="recaptcha-container"></div>
+            <input type="text" id="phone"/>
+            <button id="verify-phone">Verify Phone</button>
+            <input type="text" id="code"/>
+            <button id="verify-code">Verify Code</button>
         </div>
 
         <div id="logged-in">
@@ -36,5 +44,6 @@ Licensed under the Apache License, Version 2.0 (the "License");
             </form>
         </div>
 
+        <script src="/main.js"></script>
     </body>
 </html>

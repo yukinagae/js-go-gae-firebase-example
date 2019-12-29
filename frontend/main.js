@@ -93,3 +93,31 @@ signOutBtn.click(function(event) {
 
 configureFirebaseLogin();
 configureFirebaseLoginWidget();
+
+window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+
+var verifyPhoneBtn = $('#verify-phone');
+verifyPhoneBtn.click(function(event) {
+    var phoneNumber = document.getElementById("phone").value;
+    var appVerifier = window.recaptchaVerifier;
+    firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+        .then(function(confirmationResult) {
+            // SMS sent. Prompt user to type the code from the message, then sign the
+            // user in with confirmationResult.confirm(code).
+            window.confirmationResult = confirmationResult;
+        }).catch(function(error) {
+            console.log(error)
+        });
+})
+
+var verifyCodeBtn = $('#verify-code');
+verifyCodeBtn.click(function(event) {
+    var code = document.getElementById("code").value;
+    confirmationResult.confirm(code).then(function(result) {
+        var user = result.user;
+        console.log(user)
+        alert(user)
+    }).catch(function(error) {
+        console.log(error)
+    });
+})
