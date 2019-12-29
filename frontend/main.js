@@ -1,18 +1,22 @@
-var backendHostUrl = '<your-backend-url>';
+var backendHostUrl = 'https://backend-dot-[Your PROJECT ID].appspot.com';
 
 // Obtain the following from the "Add Firebase to your web app" dialogue
 // Initialize Firebase
+// TODO: replace the below
 var config = {
-    apiKey: "<API_KEY>",
-    authDomain: "<PROJECT_ID>.firebaseapp.com",
-    databaseURL: "https://<DATABASE_NAME>.firebaseio.com",
-    projectId: "<PROJECT_ID>",
-    storageBucket: "<BUCKET>.appspot.com",
-    messagingSenderId: "<MESSAGING_SENDER_ID>"
+    apiKey: "[Your Web API Key]",
+    authDomain: "[Your PROJECT ID].firebaseapp.com",
+    databaseURL: "https://[Your PROJECT ID].firebaseio.com",
+    projectId: "[Your PROJECT ID]",
+    storageBucket: "gs://[Your PROJECT ID].appspot.com",
+    messagingSenderId: "[Your Sender ID]"
 };
 
 // This is passed into the backend to authenticate the user.
 var userIdToken = null;
+var user = null;
+var userID = null;
+var data = null;
 
 // Firebase log-in
 function configureFirebaseLogin() {
@@ -22,21 +26,16 @@ function configureFirebaseLogin() {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             $('#logged-out').hide();
-            var name = user.displayName;
-
-            /* If the provider gives a display name, use the name for the
-            personal welcome message. Otherwise, use the user's email. */
-            var welcomeName = name ? name : user.email;
 
             user.getIdToken().then(function(idToken) {
                 userIdToken = idToken;
 
-                /* Now that the user is authenicated, fetch the notes. */
-                fetchNotes();
-
-                $('#user').text(welcomeName);
+                $('#user').text(user.displayName);
+                $('#email').text(user.email);
+                $('#key').text(userIdToken);
                 $('#logged-in').show();
 
+                fetcUserInfoViaGoBackend()
             });
 
         } else {
@@ -67,22 +66,18 @@ function configureFirebaseLoginWidget() {
     ui.start('#firebaseui-auth-container', uiConfig);
 }
 
-// Fetch notes from the backend.
-function fetchNotes() {
-    $.ajax(backendHostUrl + '/notes', {
-        /* Set header for the XMLHttpRequest to get data from the web server
-        associated with userIdToken */
+function fetcUserInfoViaGoBackend() {
+    $.ajax(backendHostUrl + '/', {
         headers: {
             'Authorization': 'Bearer ' + userIdToken
         }
-    }).then(function(data) {
-        $('#notes-container').empty();
-        // Iterate over user data to display user's notes from database.
-        data.forEach(function(note) {
-            $('#notes-container').append($('<p>').text(note.message));
-        });
+    }).then(function(_data) {
+        var data = _data;
+        console.log(data)
+        $('#data').text(data);
     });
 }
+
 
 // Sign out a user
 var signOutBtn = $('#sign-out');
@@ -94,31 +89,6 @@ signOutBtn.click(function(event) {
     }, function(error) {
         console.log(error);
     });
-});
-
-// Save a note to the backend
-var saveNoteBtn = $('#add-note');
-saveNoteBtn.click(function(event) {
-    event.preventDefault();
-
-    var noteField = $('#note-content');
-    var note = noteField.val();
-    noteField.val("");
-
-    /* Send note data to backend, storing in database with existing data
-    associated with userIdToken */
-    $.ajax(backendHostUrl + '/notes', {
-        headers: {
-            'Authorization': 'Bearer ' + userIdToken
-        },
-        method: 'POST',
-        data: JSON.stringify({ 'message': note }),
-        contentType: 'application/json'
-    }).then(function() {
-        // Refresh notebook display.
-        fetchNotes();
-    });
-
 });
 
 configureFirebaseLogin();
