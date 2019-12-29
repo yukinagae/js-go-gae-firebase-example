@@ -94,6 +94,7 @@ signOutBtn.click(function(event) {
 configureFirebaseLogin();
 configureFirebaseLoginWidget();
 
+firebase.auth().languageCode = 'ja';
 window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
 
 var verifyPhoneBtn = $('#verify-phone');
