@@ -1,4 +1,5 @@
 runtime: go113
+service: backend
 
 env_variables:
   FIREBASE_PROJECT_ID: "$PROJECT_ID"
